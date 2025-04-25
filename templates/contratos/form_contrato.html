@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ accion }} Contrato{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-file-earmark-text"></i> {{ accion }} Contrato</h1>
+    <a href="{% if contrato %}{% url 'detalle_contrato' contrato.pk %}{% else %}{% url 'lista_contratos' %}{% endif %}" class="btn card-four">
+        <i class="bi bi-arrow-left"></i> Volver
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header card-one text-white">
+        <h5 class="mb-0">Información del Contrato</h5>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form.tipo|as_crispy_field }}
+                    {{ form.titulo|as_crispy_field }}
+                    {{ form.parte_a|as_crispy_field }}
+                    {{ form.parte_b|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.fecha_inicio|as_crispy_field }}
+                    {{ form.fecha_fin|as_crispy_field }}
+                    {{ form.descripcion|as_crispy_field }}
+                </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn card-four">
+                    <i class="bi bi-save"></i> Guardar Contrato
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

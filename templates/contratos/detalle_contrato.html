@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ contrato.titulo }} - Detalle de Contrato{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-file-earmark-text"></i> Detalle de Contrato</h1>
+    <div>
+        <a href="{% url 'lista_contratos' %}" class="btn btn-secondary me-2">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+        <a href="{% url 'editar_contrato' contrato.pk %}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header card-one text-white">
+                <h5 class="mb-0">{{ contrato.titulo }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Tipo de Contrato:</div>
+                    <div class="col-md-8">{{ contrato.get_tipo_display }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Primera Parte:</div>
+                    <div class="col-md-8">{{ contrato.parte_a }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Segunda Parte:</div>
+                    <div class="col-md-8">{{ contrato.parte_b }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Fecha de Inicio:</div>
+                    <div class="col-md-8">{{ contrato.fecha_inicio|date:"d/m/Y" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Fecha de Fin:</div>
+                    <div class="col-md-8">{{ contrato.fecha_fin|date:"d/m/Y" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Estado:</div>
+                    <div class="col-md-8">
+                        {% if contrato.estado == 'vigente' %}
+                        <span class="badge bg-success">Vigente</span>
+                        {% elif contrato.estado == 'vencido' %}
+                        <span class="badge bg-danger">Vencido</span>
+                        {% elif contrato.estado == 'no_iniciado' %}
+                        <span class="badge bg-secondary">No Iniciado</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Creado por:</div>
+                    <div class="col-md-8">{{ contrato.creado_por.username }} el {{ contrato.fecha_creacion|date:"d/m/Y H:i" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 fw-bold">Última modificación:</div>
+                    <div class="col-md-8">{{ contrato.ultima_modificacion|date:"d/m/Y H:i" }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-12 fw-bold">Descripción:</div>
+                    <div class="col-12 mt-2">
+                        <p>{{ contrato.descripcion|linebreaks }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Archivos adjuntos -->
+        <div class="card mb-4">
+            <div class="card-header card-four d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-paperclip"></i> Archivos Adjuntos</h5>
+                <a href="{% url 'agregar_adjunto' contrato.pk %}" class="btn btn-sm btn-light">
+                    <i class="bi bi-plus"></i> Añadir
+                </a>
+            </div>
+            <div class="card-body">
+                {% if adjuntos %}
+                <ul class="list-group">
+                    {% for adjunto in adjuntos %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-file-earmark"></i> {{ adjunto.nombre }}
+                            <small class="d-block text-muted">{{ adjunto.fecha_subida|date:"d/m/Y H:i" }}</small>
+                        </div>
+                        <a href="{{ adjunto.archivo.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No hay archivos adjuntos.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Historial de cambios -->
+        <div class="card">
+            <div class="card-header card-two text-white">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> Historial de Cambios</h5>
+            </div>
+            <div class="card-body">
+                {% if historial %}
+                <div class="timeline">
+                    {% for cambio in historial %}
+                    <div class="mb-3 pb-3 border-bottom">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ cambio.usuario.username }}</strong>
+                            <small>{{ cambio.fecha|date:"d/m/Y H:i" }}</small>
+                        </div>
+                        <p class="mb-0">{{ cambio.descripcion_cambio }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No hay historial de cambios.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

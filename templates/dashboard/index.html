@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Sistema de Gestión de Contratos{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="bi bi-speedometer2"></i> Dashboard</h1>
+
+<div class="row">
+    <!-- Tarjetas de estadísticas -->
+    <div class="col-md-4 mb-4">
+        <div class="card border-primary h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title"><i class="bi bi-file-earmark-text"></i> Total de Contratos</h5>
+                <p class="display-4">{{ total_contratos }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title"><i class="bi bi-check-circle"></i> Contratos Vigentes</h5>
+                <p class="display-4">{{ contratos_vigentes }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card border-warning h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title"><i class="bi bi-exclamation-triangle"></i> Por Vencer (30 días)</h5>
+                <p class="display-4">{{ contratos_por_vencer.count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Contratos por vencer -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header card-one text-white">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> Contratos por Vencer</h5>
+            </div>
+            <div class="card-body">
+                {% if contratos_por_vencer %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Contrato</th>
+                                <th>Tipo</th>
+                                <th>Vence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contrato in contratos_por_vencer %}
+                            <tr>
+                                <td><a href="{% url 'detalle_contrato' contrato.pk %}">{{ contrato.titulo }}</a></td>
+                                <td>{{ contrato.get_tipo_display }}</td>
+                                <td>{{ contrato.fecha_fin }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No hay contratos por vencer en los próximos 30 días.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Actividad reciente -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header card-two text-white">
+                <h5 class="mb-0"><i class="bi bi-activity"></i> Actividad Reciente</h5>
+            </div>
+            <div class="card-body">
+                {% if actividad_reciente %}
+                <ul class="list-group">
+                    {% for actividad in actividad_reciente %}
+                    <li class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">
+                                <a href="{% url 'detalle_contrato' actividad.contrato.pk %}">{{ actividad.contrato.titulo }}</a>
+                            </h6>
+                            <small>{{ actividad.fecha|date:"d/m/Y H:i" }}</small>
+                        </div>
+                        <p class="mb-1">{{ actividad.descripcion_cambio }}</p>
+                        <small>Por: {{ actividad.usuario.username }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No hay actividad reciente.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Contratos por tipo -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header card-three text-white">
+                <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Contratos por Tipo</h5>
+            </div>
+            <div class="card-body">
+                {% if contratos_por_tipo %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tipo in contratos_por_tipo %}
+                            <tr>
+                                <td>{{ tipo.tipo|capfirst }}</td>
+                                <td>{{ tipo.total }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No hay contratos registrados.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contratos recientes -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header card-four">
+                <h5 class="mb-0"><i class="bi bi-file-earmark-plus"></i> Contratos Recientes</h5>
+            </div>
+            <div class="card-body">
+                {% if contratos_recientes %}
+                <div class="list-group">
+                    {% for contrato in contratos_recientes %}
+                    <a href="{% url 'detalle_contrato' contrato.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ contrato.titulo }}</h6>
+                            <small>{{ contrato.fecha_creacion|date:"d/m/Y" }}</small>
+                        </div>
+                        <p class="mb-1">{{ contrato.get_tipo_display }} - {{ contrato.parte_b }}</p>
+                        <small>Creado por: {{ contrato.creado_por.username }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No hay contratos recientes.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
