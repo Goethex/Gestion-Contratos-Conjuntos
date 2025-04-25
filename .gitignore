@@ -1,0 +1,32 @@
+# Archivos de Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+db.sqlite3
+
+# Entorno virtual (si usas virtualenv o venv)
+venv/
+env/
+
+# Archivos de configuración local
+*.env
+*.local
+
+# Archivos de logs
+*.log
+
+# Archivos de migraciones (puedes querer mantenerlas si están versionadas)
+*/migrations/*.pyc
+*/migrations/*.pyo
+*/migrations/__init__.py
+
+# Directorios de cache
+*.mo
+*.pot
+
+# Archivos específicos de IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
