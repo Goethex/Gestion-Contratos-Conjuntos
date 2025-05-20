@@ -10,8 +10,8 @@ def dashboard(request):
     # Estadísticas generales
     total_contratos = Contrato.objects.count()
     contratos_vigentes = Contrato.objects.filter(
-        fecha_inicio__lte=timezone.now().date(),
-        fecha_fin__gte=timezone.now().date()
+        fecha_inicio__lte=timezone.localdate(),
+        fecha_fin__gte=timezone.localdate()
     ).count()
     
     # Contratos por vencer (próximos 30 días)
