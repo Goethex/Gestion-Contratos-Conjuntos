@@ -32,9 +32,28 @@ class Contrato(models.Model):
     def __str__(self):
         return f"{self.titulo} - {self.get_tipo_display()}"
     
+    @property
+    def estado_actual(self):
+        hoy = timezone.localdate()
+        if self.fecha_inicio > hoy:
+            return "no_iniciado"
+        elif self.fecha_inicio <= hoy <= self.fecha_fin:
+            return "vigente"
+        elif self.fecha_fin < hoy:
+            return "vencido"
+    
+    def save(self, *args, **kwargs):
+        hoy = timezone.localdate()
+        if self.fecha_inicio > hoy:
+            self.estado = "no_iniciado"
+        elif self.fecha_inicio <= hoy <= self.fecha_fin:
+            self.estado = "vigente"
+        else:
+            self.estado = "vencido"
+        super().save(*args, **kwargs)
+    
     def actualizar_estado(self):
-        """Actualiza el estado del contrato basado en las fechas."""
-        hoy = timezone.now().date()
+        hoy = timezone.localdate()
         if self.fecha_inicio > hoy:
             self.estado = 'no_iniciado'
         elif self.fecha_inicio <= hoy <= self.fecha_fin:

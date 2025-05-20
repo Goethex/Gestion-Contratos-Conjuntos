@@ -45,11 +45,11 @@
                 <div class="row mb-3">
                     <div class="col-md-4 fw-bold">Estado:</div>
                     <div class="col-md-8">
-                        {% if contrato.estado == 'vigente' %}
+                        {% if contrato.estado_actual == 'vigente' %}
                         <span class="badge bg-success">Vigente</span>
-                        {% elif contrato.estado == 'vencido' %}
+                        {% elif contrato.estado_actual == 'vencido' %}
                         <span class="badge bg-danger">Vencido</span>
-                        {% elif contrato.estado == 'no_iniciado' %}
+                        {% elif contrato.estado_actual == 'no_iniciado' %}
                         <span class="badge bg-secondary">No Iniciado</span>
                         {% endif %}
                     </div>
